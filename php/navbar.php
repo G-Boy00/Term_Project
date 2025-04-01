@@ -4,6 +4,9 @@
         <div class="navbar-nav ms-auto">
             <a href="profile.php" class="nav-link">Profile</a>
             <a href="logout.php" class="nav-link">Logout</a>
+            <li class="nav-item">
+  
+
         </div>
     </div>
 </nav>
