@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Banking - Homepage</title>
+    <!-- Link to Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Animation Library -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet"/>
+</head>
+<body>
+    
+    <!-- Dark/Light Mode Toggle -->
+    <div class="container mt-3">
+        <button id="theme-toggle" class="btn btn-outline-secondary">Switch to Dark Mode</button>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero-section text-center py-5">
+        <div class="container">
+            <h1 class="display-3 animate__animated animate__fadeInUp">Welcome to Your Online Bank</h1>
+            <p class="lead animate__animated animate__fadeInUp">Manage your finances, track spending, and make transactions anytime, anywhere.</p>
+            <a href="php/login.php" class="btn btn-custom animate__animated animate__fadeInUp">Get Started</a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="container py-5">
+        <h2 class="text-center mb-4">Our Features</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card animate__animated animate__fadeInUp">
+                    <div class="card-header">
+                        <h5>Account Overview</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>View your account balance, transaction history, and financial overview with just a few clicks.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card animate__animated animate__fadeInUp">
+                    <div class="card-header">
+                        <h5>Easy Transfers</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Transfer funds between accounts, pay bills, and send money to others easily and securely.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card animate__animated animate__fadeInUp">
+                    <div class="card-header">
+                        <h5>Secure & Reliable</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Our system uses the latest security measures to ensure that your information and funds are always safe.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section class="text-center py-5 bg-light">
+        <div class="container">
+            <h2>Start Your Financial Journey Today!</h2>
+            <p class="lead mb-4">Sign up now to gain full access to all of our online banking features and enjoy the convenience of managing your finances from anywhere.</p>
+            <a href="php/login.php" class="btn btn-primary btn-lg animate__animated animate__pulse">Login to Your Account</a>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer class="footer bg-light py-4 text-center">
+        <p>&copy; 2025 Online Banking. All Rights Reserved.</p>
+        <p><a href="terms.html">Terms & Conditions</a> | <a href="privacy.html">Privacy Policy</a></p>
+    </footer>
+
+    <script src="js/darkmodetoogle.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
