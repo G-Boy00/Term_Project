@@ -1,6 +1,5 @@
 <?php
 require_once __DIR__ . '/../includes/config.php';
-// require_once __DIR__ . '/../includes/helpers.php';
 requireAuth();
 
 function getUser($id) {
@@ -14,18 +13,20 @@ function getUser($id) {
 // Get current user
 $user = getUser($_SESSION['user_id']);
 if (!$user) {
-    die("Error: User not found");
+    die("Error: User not found.");
 }
 
-// Fetch user's account number securely
-$stmt = $conn->prepare("SELECT account_number FROM accounts WHERE user_id = ?");
+$stmt = $conn->prepare("SELECT balance FROM users WHERE id = ?");
 $stmt->bind_param("i", $user['id']);
 $stmt->execute();
-$account = $stmt->get_result()->fetch_assoc();
-if (!$account) {
-    die("Error: Account not found. Contact support.");
+$userData = $stmt->get_result()->fetch_assoc();
+
+if (!$userData) {
+    die("Error: User balance not found. Contact support.");
 }
-$user['account_number'] = $account['account_number'];  // Attach account number to user
+
+$user['balance'] = $userData['balance'];  // Fetch balance from users table
+
 
 $error = '';
 $success = '';
@@ -35,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['withdraw'])) {
     $description = $_POST['description'] ?? '';
     $fromAccount = $user['account_number'];
     $details = empty($description) ? "Cash withdrawal" : $description;
-    // Validate withdrawal
+
     if ($amount === false || $amount <= 0) {
         $error = "Invalid withdrawal amount.";
     } elseif ($amount > $user['balance']) {
@@ -43,26 +44,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['withdraw'])) {
     } else {
         $conn->begin_transaction();
         try {
-            // 1. Deduct balance
+            // 1. Deduct balance from the accounts table
+            $stmt = $conn->prepare("UPDATE accounts SET balance = balance - ? WHERE user_id = ?");
+            $stmt->bind_param("di", $amount, $user['id']);
+            if (!$stmt->execute()) {
+              throw new Exception("Balance update failed in accounts: " . $stmt->error);
+            }
+
+            // Update balance in users table too
             $stmt = $conn->prepare("UPDATE users SET balance = balance - ? WHERE id = ?");
             $stmt->bind_param("di", $amount, $user['id']);
-            $stmt->execute();
+            if (!$stmt->execute()) {
+                throw new Exception("Balance update failed in users: " . $stmt->error);
+            }
 
-            // 2. Record transaction
-            
 
+            // 2. Record transaction (Ensure 'withdraw' matches the expected value in transaction history)
             $stmt = $conn->prepare("INSERT INTO transactions 
-                (user_id, type, amount, from_account, to_account, details) 
-                VALUES (?, 'withdraw', ?, ?, ?, ?)");
+                (user_id, type, amount, from_account, to_account, details, created_at) 
+                VALUES (?, 'withdrawal', ?, ?, ?, ?, NOW())");
             
-           
+            if (!$stmt) {
+                throw new Exception("Transaction prepare error: " . $conn->error);
+            }
 
             $stmt->bind_param("idsss", $user['id'], $amount, $fromAccount, $fromAccount, $details);
-            $stmt->execute();
-            
+            if (!$stmt->execute()) {
+                throw new Exception("Transaction insert error: " . $stmt->error);
+            }
+
             $conn->commit();
             $success = "Successfully withdrew $" . number_format($amount, 2);
-            $user = getUser($_SESSION['user_id']); // Refresh user data
+            // Refresh user balance after withdrawal
+            $user = getUser($_SESSION['user_id']);
         } catch (Exception $e) {
             $conn->rollback();
             $error = "Transaction failed: " . $e->getMessage();

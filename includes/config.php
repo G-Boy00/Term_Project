@@ -66,4 +66,3 @@ if (!function_exists('generateCsrfToken')) {
         return $_SESSION['csrf_token'];
     }
 }
-// define('BASE_URL', 'http://127.0.0.1/Online_banking');
